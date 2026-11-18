@@ -1,0 +1,23 @@
+name: build
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip project
+        run: unzip -o "$(find . -maxdepth 1 -name '*.zip' | head -1)" || true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build
+        run: mvn -B package --file pom.xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: adminmod-paper-jar
+          path: target/adminmod-paper.jar
